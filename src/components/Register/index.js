@@ -1,10 +1,27 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
+import { useDispatch, connect } from 'react-redux';
+import { registerUser } from '../../redux/actions/authActions';
 
-const RegisterForm = () => {
+const RegisterForm = ({ dispatchRegisterAction }) => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const dispatch = useDispatch();
+
+  const handleOnSubmit = event => {
+    event.preventDefault();
+    // dispatch(registerUser(
+    //   { firstName, lastName, email, password }, 
+    //   () => console.log('User created successfully'),
+    //   (message) => console.log(`Error : ${message}`)
+    // ));
+    dispatchRegisterAction(
+        firstName, lastName, email, password, 
+        () => console.log('User created successfully'),
+        (message) => console.log(`Error : ${message}`))
+  };
 
   return (
     <div>
@@ -12,7 +29,7 @@ const RegisterForm = () => {
       <h5>Create an account</h5>
       <br />
 
-      <form noValidate>
+      <form noValidate onSubmit={handleOnSubmit}>
         <div className="form-group">
           <label htmlFor="firstName">First Name</label>
           <input 
@@ -61,7 +78,7 @@ const RegisterForm = () => {
             noValidate
             id="password1"
             name="password"
-            type="text"
+            type="password"
             placeholder="Password"
             value={password}
             className="form-control"
@@ -81,4 +98,10 @@ const RegisterForm = () => {
   )
 }
 
-export default RegisterForm;
+const mapDispatchToProps = dispatch => ({
+  dispatchRegisterAction: (firstName, lastName, email, password, onSuccess, onError) => {
+    dispatch(registerUser({firstName, lastName, email, password}, onSuccess, onError));
+  }
+})
+
+export default connect(null, mapDispatchToProps)(RegisterForm);

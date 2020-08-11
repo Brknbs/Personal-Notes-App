@@ -2,9 +2,9 @@ import axios from 'axios';
 import constants from './constants';
 
 export const apiMiddleware = ({ dispatch, getState }) => next => action => {
-  if (action.type != constants.API) return next(action);
+  if (action.type !== constants.API) return next(action);
 
-  const BASE_URL = 'http://localhost/3000';
+  const BASE_URL = 'http://localhost:3300';
   const { url, method, success, data, postProcessSuccess, postProcessError } = action.payload;
 
   axios({

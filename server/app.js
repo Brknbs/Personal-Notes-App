@@ -5,10 +5,12 @@ const { MONGODB } = require('./config');
 const userRoutes = require('./routes/user');
 const noteRoutes = require('./routes/note');
 const auth = require('./middlewares/auth');
+const cors = require('cors');
 
 const PORT = 3300;
 
 app.use(express.json());
+app.use(cors());
 
 app.use('/api/protected', auth, (req, res) => {
   res.end(`Hi ${req.user.firstName}, you are authenticated!`);

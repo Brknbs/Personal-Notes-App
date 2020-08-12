@@ -12,6 +12,18 @@ export const registerUser = (data, onSuccess, onError) => ({
   }
 });
 
+export const loginUser = (data, onSuccess, onError) => ({
+  type: constants.API,
+  payload: {
+    method: 'POST',
+    url: '/api/users/login',
+    data,
+    success: response => (setUserInfo(response)),
+    postProcessSuccess: onSuccess,
+    postProcessError: onError
+  }
+})
+
 const setUserInfo = data => {
   const parsedToken = JSON.parse(atob(data.token.split('.')[1]));
   const userInfo = {

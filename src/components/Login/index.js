@@ -1,9 +1,18 @@
 import React, { useState } from 'react'
+import { useDispatch } from 'react-redux';
+import { loginUser } from '../../redux/actions/authActions';
 
 const LoginForm = () => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const dispatch = useDispatch();
+
+  const handleOnSubmit = event => {
+    event.preventDefault();
+    dispatch(loginUser({ email, password }, () => console.log('Logged in succesfully'), (message) => console.log(`Error: ${message}`)));
+  }
 
   return (
     <div>
@@ -11,7 +20,7 @@ const LoginForm = () => {
       <h5>Login here</h5>
       <br />
 
-      <form noValidate>
+      <form noValidate onSubmit={handleOnSubmit}>
         <div className="form-group">
           <label htmlFor="email">Email</label>
           <input noValidate id="email" 
@@ -31,7 +40,7 @@ const LoginForm = () => {
             name="password"
             placeholder="Password"
             value={password}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
             className="form-control"
           />
         </div>

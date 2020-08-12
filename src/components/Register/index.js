@@ -12,15 +12,15 @@ const RegisterForm = ({ dispatchRegisterAction }) => {
 
   const handleOnSubmit = event => {
     event.preventDefault();
-    // dispatch(registerUser(
-    //   { firstName, lastName, email, password }, 
-    //   () => console.log('User created successfully'),
-    //   (message) => console.log(`Error : ${message}`)
-    // ));
-    dispatchRegisterAction(
-        firstName, lastName, email, password, 
-        () => console.log('User created successfully'),
-        (message) => console.log(`Error : ${message}`))
+    dispatch(registerUser(
+      { firstName, lastName, email, password }, 
+      () => console.log('User created successfully'),
+      (message) => console.log(`Error : ${message}`)
+    ));
+    // dispatchRegisterAction(
+    //     firstName, lastName, email, password, 
+    //     () => console.log('User created successfully'),
+    //     (message) => console.log(`Error : ${message}`))
   };
 
   return (
@@ -98,10 +98,10 @@ const RegisterForm = ({ dispatchRegisterAction }) => {
   )
 }
 
-const mapDispatchToProps = dispatch => ({
-  dispatchRegisterAction: (firstName, lastName, email, password, onSuccess, onError) => {
-    dispatch(registerUser({firstName, lastName, email, password}, onSuccess, onError));
-  }
-})
+// const mapDispatchToProps = dispatch => ({
+//   dispatchRegisterAction: (firstName, lastName, email, password, onSuccess, onError) => {
+//     dispatch(registerUser({firstName, lastName, email, password}, onSuccess, onError));
+//   }
+// })
 
-export default connect(null, mapDispatchToProps)(RegisterForm);
+export default RegisterForm;

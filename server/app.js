@@ -3,6 +3,7 @@ const app = express();
 const mongoose = require('mongoose');
 const { MONGODB } = require('./config');
 const userRoutes = require('./routes/user');
+const noteRoutes = require('./routes/note');
 const auth = require('./middlewares/auth');
 
 const PORT = 3300;
@@ -14,6 +15,7 @@ app.use('/api/protected', auth, (req, res) => {
 });
 
 app.use('/api/users', userRoutes);
+app.use('/api/notes', auth, noteRoutes);
 
 app.use((req, res, next) => {
   const err = new Error('Not Found');

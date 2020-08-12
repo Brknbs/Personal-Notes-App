@@ -1,4 +1,6 @@
 const User = require('../models/user');
+const jwt = require('jsonwebtoken');
+const { SECRET_KEY } = require('../config');
 
 exports.register = async (req, res, next) => {
   const { firstName, lastName, email, password } = req.body;
@@ -13,9 +15,15 @@ exports.register = async (req, res, next) => {
   }
 
   const newUser = new User({ firstName, lastName, email, password });
-  await newUser.save();
-
-  res.status(200).json({ message: 'success' });
+  
+  try {
+    await newUser.save();
+    const token = getSignedToken(newUser);
+    res.status(200).json({ token });
+  } catch (error) {
+    error.status = 400;
+    next(error);
+  }
 };
 
 exports.login = async (req, res, next) => {
@@ -40,6 +48,15 @@ exports.login = async (req, res, next) => {
     }); 
   }
 
-  res.status(200).json({ message: 'success' });
+  const token = getSignedToken(user);
+  res.status(200).json({ token });
+}
 
+const getSignedToken = user => {
+  return jwt.sign({
+    id: user._id,
+    email: user.email,
+    firstName: user.firstName,
+    lastName: user.lastName
+  }, SECRET_KEY, { expiresIn: '1h' });
 }

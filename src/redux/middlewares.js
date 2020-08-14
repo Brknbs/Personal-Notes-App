@@ -1,11 +1,16 @@
 import axios from 'axios';
 import constants from './constants';
+import { logoutUser } from './actions/authActions';
 
 export const apiMiddleware = ({ dispatch, getState }) => next => action => {
   if (action.type !== constants.API) return next(action);
 
   dispatch({ type: constants.TOGGLE_LOADING });
   const BASE_URL = 'http://localhost:3300';
+  const AUTH_TOKEN = getState().user.token;
+  if (AUTH_TOKEN) {
+    axios.defaults.headers.common['Authorization'] = `Bearer ${AUTH_TOKEN}`;
+  }
   const { url, method, success, data, postProcessSuccess, postProcessError } = action.payload;
 
   axios({
@@ -20,6 +25,9 @@ export const apiMiddleware = ({ dispatch, getState }) => next => action => {
     dispatch({ type: constants.TOGGLE_LOADING });
     if(!err.response) console.warn(err);
     else {
+      if (err.response && err.response.status === 403) {
+        dispatch(logoutUser());
+      }
       if (err.response.data.error.message) {
         if (postProcessError) postProcessError(err.response.data.error.message);
       }

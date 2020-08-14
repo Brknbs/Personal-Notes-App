@@ -1,7 +1,9 @@
 const API = 'API';
 const SET_USER_INFO = 'SET_USER_INFO';
+const TOGGLE_LOADING = 'TOGGLE_LOADING';
 
 export default {
   API,
-  SET_USER_INFO
+  SET_USER_INFO,
+  TOGGLE_LOADING
 }

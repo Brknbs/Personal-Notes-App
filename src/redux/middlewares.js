@@ -4,6 +4,7 @@ import constants from './constants';
 export const apiMiddleware = ({ dispatch, getState }) => next => action => {
   if (action.type !== constants.API) return next(action);
 
+  dispatch({ type: constants.TOGGLE_LOADING });
   const BASE_URL = 'http://localhost:3300';
   const { url, method, success, data, postProcessSuccess, postProcessError } = action.payload;
 
@@ -12,9 +13,11 @@ export const apiMiddleware = ({ dispatch, getState }) => next => action => {
     url: BASE_URL + url,
     data: data ? data : null
   }).then(response => {
+    dispatch({ type: constants.TOGGLE_LOADING });
     if(success) dispatch(success(response.data));
     if(postProcessSuccess) postProcessSuccess(response.data);
   }).catch(err => {
+    dispatch({ type: constants.TOGGLE_LOADING });
     if(!err.response) console.warn(err);
     else {
       if (err.response.data.error.message) {

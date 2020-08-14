@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch, connect } from 'react-redux';
 import { registerUser } from '../../redux/actions/authActions';
+import { toast } from 'react-toastify';
 
 const RegisterForm = ({ dispatchRegisterAction }) => {
   const [firstName, setFirstName] = useState('');
@@ -14,8 +15,8 @@ const RegisterForm = ({ dispatchRegisterAction }) => {
     event.preventDefault();
     dispatch(registerUser(
       { firstName, lastName, email, password }, 
-      () => console.log('User created successfully'),
-      (message) => console.log(`Error : ${message}`)
+      () => toast.success('User created successfully'),
+      (message) => toast.error(`Error : ${message}`)
     ));
     // dispatchRegisterAction(
     //     firstName, lastName, email, password, 

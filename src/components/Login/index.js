@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux';
 import { loginUser } from '../../redux/actions/authActions';
+import { toast } from 'react-toastify';
 
 const LoginForm = () => {
 
@@ -11,7 +12,7 @@ const LoginForm = () => {
 
   const handleOnSubmit = event => {
     event.preventDefault();
-    dispatch(loginUser({ email, password }, () => console.log('Logged in succesfully'), (message) => console.log(`Error: ${message}`)));
+    dispatch(loginUser({ email, password }, () => toast.success('Logged in succesfully'), (message) => toast.error(`Error: ${message}`)));
   }
 
   return (

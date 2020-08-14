@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, Slide } from 'react-toastify';
 
@@ -12,6 +12,8 @@ import NotesPage from './pages/NotesPage';
 // Components
 import Header from './components/Header';
 import Spinner from './components/Spinner';
+
+import { logoutUser } from './redux/actions/authActions';
 
 const App = () => {
 

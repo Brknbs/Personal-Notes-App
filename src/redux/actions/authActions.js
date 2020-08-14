@@ -22,7 +22,12 @@ export const loginUser = (data, onSuccess, onError) => ({
     postProcessSuccess: onSuccess,
     postProcessError: onError
   }
-})
+});
+
+export const logoutUser = () => {
+  localStorage.removeItem('USER_INFO');
+  return { type: constants.RESET_USER_INFO };
+}
 
 const setUserInfo = data => {
   const parsedToken = JSON.parse(atob(data.token.split('.')[1]));
@@ -39,3 +44,4 @@ const setUserInfo = data => {
     payload: userInfo
   };
 };
+

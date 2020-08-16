@@ -4,15 +4,28 @@ import { loginUser } from '../../redux/actions/authActions';
 import { toast } from 'react-toastify';
 
 const LoginForm = () => {
+  const dispatch = useDispatch();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState({ email: false, password: false });
 
-  const dispatch = useDispatch();
+  const isFormInvalid = () => (!email || !password);
+
+  const updateErrorFlags = () => {
+    const errObj = { email: false, password: false };
+    if (!email.trim()) errObj.email = true;
+    if (!password.trim()) errObj.password = true;
+    setError(errObj);
+  }
 
   const handleOnSubmit = event => {
     event.preventDefault();
-    dispatch(loginUser({ email, password }, () => toast.success('Logged in succesfully'), (message) => toast.error(`Error: ${message}`)));
+    if (isFormInvalid()) updateErrorFlags();
+    else {
+      dispatch(loginUser({ email, password }, () => toast.success('Logged in succesfully'), (message) => toast.error(`Error: ${message}`)));
+    } 
+    // setError({ email: false, password: false });
   }
 
   return (
@@ -30,8 +43,9 @@ const LoginForm = () => {
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="form-control mb-3"
+            className={`form-control mb-3 ${error.email ? 'is-invalid' : ''}`} 
           />
+          <p className="invalid-feedback">Required</p>
         </div>
         
         <div className="form-group">
@@ -42,8 +56,9 @@ const LoginForm = () => {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="form-control"
+            className={`form-control ${error.password ? 'is-invalid' : ''}`} 
           />
+          <p className="invalid-feedback">Required</p>
         </div>
 
         <button className="btn btn-primary" type="submit">

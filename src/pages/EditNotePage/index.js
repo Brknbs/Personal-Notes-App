@@ -10,6 +10,18 @@ const EditNotePage = ({ history, match }) => {
   const [content, setContent] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('');
+  const [error, setError] = useState({ title: false, content: false, description: false, category: false });
+
+  const isFormInvalid = () => (!title || !content || !description || category);
+
+  const updateErrorFlags = () => {
+    const errObj = { title: false, content: false, description: false, category: false };
+    if (!title.trim()) errObj.title = true;
+    if (!content.trim()) errObj.content = true;
+    if (!description.trim()) errObj.description = true;
+    if (!category.trim()) errObj.category = true;
+    setError(errObj);
+  }
 
   const getNote = noteId => {
     dispatch(getNodeById(noteId, ({ title, content, description, category }) => {
@@ -34,20 +46,22 @@ const EditNotePage = ({ history, match }) => {
 
   const handleOnSubmit = event => {
     event.preventDefault();
-    const data = { title, content, description, category };
-    const { noteId } = match.params;
-    if (noteId) {
-      dispatch(updateNoteById(noteId, data, () => {
-        toast.success('Note updated successfully!');
-        history.replace('/notes');
-      }, (message) => toast.error(`Error: ${message}`)));
-    } else {
-      dispatch(createNote(data, () => {
-        toast.success('Note created successfully!');
-        history.replace('/notes');
-      }, (message) => toast.error(`Error: ${message}`)));
+    if (isFormInvalid()) updateErrorFlags();
+    else {
+      const data = { title, content, description, category };
+      const { noteId } = match.params;
+      if (noteId) {
+        dispatch(updateNoteById(noteId, data, () => {
+          toast.success('Note updated successfully!');
+          history.replace('/notes');
+        }, (message) => toast.error(`Error: ${message}`)));
+      } else {
+        dispatch(createNote(data, () => {
+          toast.success('Note created successfully!');
+          history.replace('/notes');
+        }, (message) => toast.error(`Error: ${message}`)));
+      }
     }
-    
   };
 
   return (
@@ -69,8 +83,9 @@ const EditNotePage = ({ history, match }) => {
                 name="title"
                 value={title}
                 onChange={e => setTitle(e.target.value)}
-                className="form-control"
+                className={`form-control ${error.title ? 'is-invalid' : ''}`}
               />
+              <p className="invalid-feedback">Required</p>
             </div>
             <div className="form-group">
               <label htmlFor="content"></label>
@@ -81,8 +96,9 @@ const EditNotePage = ({ history, match }) => {
                 name="content"
                 value={content}
                 onChange={e => setContent(e.target.value)}
-                className="form-control"
+                className={`form-control ${error.content ? 'is-invalid' : ''}`}
               />
+              <p className="invalid-feedback">Required</p>
             </div>
             <div className="form-group">
               <label htmlFor="description"></label>
@@ -93,15 +109,16 @@ const EditNotePage = ({ history, match }) => {
                 name="description"
                 value={description}
                 onChange={e => setDescription(e.target.value)}
-                className="form-control"
+                className={`form-control ${error.description ? 'is-invalid' : ''}`}
               />
+              <p className="invalid-feedback">Required</p>
             </div>
             <div className="form-group">
               <label htmlFor="category">Category</label>
               <select noValidate 
                 id="category"
                 name="category"
-                className="form-control"
+                className={`form-control ${error.category ? 'is-invalid' : ''}`}
                 value={category}
                 onChange={e => setCategory(e.target.value)}
               >
@@ -110,6 +127,7 @@ const EditNotePage = ({ history, match }) => {
                 <option value="IDPROOF">ID Proof</option>
                 <option value="PROFESSIONAL">Professional</option>
               </select>
+              <p className="invalid-feedback">Required</p>
             </div>
 
             <div className="mt-5">

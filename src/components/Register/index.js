@@ -8,16 +8,31 @@ const RegisterForm = ({ dispatchRegisterAction }) => {
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState({ email: false, password: false, firstName: false, lastName: false });
+
+  const isFormInvalid = () => (!email || !password || !firstName || lastName);
+
+  const updateErrorFlags = () => {
+    const errObj = { email: false, password: false, firstName: false, lastName: false };
+    if (!email.trim()) errObj.email = true;
+    if (!password.trim()) errObj.password = true;
+    if (!firstName.trim()) errObj.firstName = true;
+    if (!lastName.trim()) errObj.lastName = true;
+    setError(errObj);
+  }
 
   const dispatch = useDispatch();
 
   const handleOnSubmit = event => {
     event.preventDefault();
-    dispatch(registerUser(
-      { firstName, lastName, email, password }, 
-      () => toast.success('User created successfully'),
-      (message) => toast.error(`Error : ${message}`)
-    ));
+    if (isFormInvalid()) updateErrorFlags();
+    else {
+      dispatch(registerUser(
+        { firstName, lastName, email, password }, 
+        () => toast.success('User created successfully'),
+        (message) => toast.error(`Error : ${message}`)
+      ));
+    }
     // dispatchRegisterAction(
     //     firstName, lastName, email, password, 
     //     () => console.log('User created successfully'),
@@ -40,9 +55,10 @@ const RegisterForm = ({ dispatchRegisterAction }) => {
             type="text"
             placeholder="First Name"
             value={firstName}
-            className="form-control"
+            className={`form-control ${error.firstName ? 'is-invalid' : ''}`}
             onChange={(e) => setFirstName(e.target.value)}
           />
+          <p className="invalid-feedback">Required</p>
         </div>
 
         <div className="form-group">
@@ -54,9 +70,10 @@ const RegisterForm = ({ dispatchRegisterAction }) => {
             type="text"
             placeholder="Last Name"
             value={lastName}
-            className="form-control"
+            className={`form-control ${error.lastName ? 'is-invalid' : ''}`}
             onChange={(e) => setLastName(e.target.value)}
           />
+          <p className="invalid-feedback">Required</p>
         </div>
 
         <div className="form-group">
@@ -68,9 +85,10 @@ const RegisterForm = ({ dispatchRegisterAction }) => {
             type="text"
             placeholder="Email"
             value={email}
-            className="form-control"
+            className={`form-control ${error.email ? 'is-invalid' : ''}`}
             onChange={(e) => setEmail(e.target.value)}
           />
+          <p className="invalid-feedback">Required</p>
         </div>
 
         <div className="form-group">
@@ -82,9 +100,10 @@ const RegisterForm = ({ dispatchRegisterAction }) => {
             type="password"
             placeholder="Password"
             value={password}
-            className="form-control"
+            className={`form-control ${error.password ? 'is-invalid' : ''}`}
             onChange={(e) => setPassword(e.target.value)}
           />
+          <p className="invalid-feedback">Required</p>
         </div>
 
         <button type="submit" className="btn btn-primary">

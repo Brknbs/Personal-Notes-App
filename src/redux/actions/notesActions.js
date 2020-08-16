@@ -42,6 +42,17 @@ export const updateNoteById = (noteId, data, onSuccess, onError) => ({
   }
 });
 
+export const deleteNoteById = (noteId, onSuccess, onError) => ({
+  type: constants.API,
+  payload: {
+    method: 'DELETE',
+    url: `/api/notes/${noteId}`,
+    success: () => (removeNote(noteId)),
+    postProcessSuccess: onSuccess,
+    postProcessError: onError
+  }
+});
+
 const addNote = note => ({
   type: constants.ADD_NOTE,
   payload: note
@@ -55,4 +66,9 @@ const setAllNotes = data => ({
 const updateNote = (noteId, data) => ({
   type: constants.API,
   payload: { noteId, data }
+});
+
+const removeNote = noteId => ({
+  type: constants.REMOVE_NOTE,
+  payload: noteId
 });

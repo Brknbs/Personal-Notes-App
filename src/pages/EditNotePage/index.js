@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux';
-import { createNote } from '../../redux/actions/notesActions';
+import { createNote, getNodeById, updateNoteById } from '../../redux/actions/notesActions';
 import { toast } from 'react-toastify';
 
-const EditNotePage = ({ history }) => {
+const EditNotePage = ({ history, match }) => {
   const dispatch = useDispatch();
 
   const [title, setTitle] = useState('');
@@ -11,13 +11,43 @@ const EditNotePage = ({ history }) => {
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('');
 
+  const getNote = noteId => {
+    dispatch(getNodeById(noteId, ({ title, content, description, category }) => {
+      setTitle(title);
+      setContent(content);
+      setDescription(description);
+      setCategory(category);
+    }));
+  };
+
+  useEffect(() => {
+    const { noteId } = match.params;
+    if (noteId) {
+      dispatch(getNodeById(noteId, ({ title, content, description, category }) => {
+        setTitle(title);
+        setContent(content);
+        setDescription(description);
+        setCategory(category);
+      }));
+    }
+  }, [])
+
   const handleOnSubmit = event => {
     event.preventDefault();
     const data = { title, content, description, category };
-    dispatch(createNote(data, () => {
-      toast.success('Note created successfully!');
-      history.replace('/notes');
-    }, (message) => toast.error(`Error: ${message}`)));
+    const { noteId } = match.params;
+    if (noteId) {
+      dispatch(updateNoteById(noteId, data, () => {
+        toast.success('Note updated successfully!');
+        history.replace('/notes');
+      }, (message) => toast.error(`Error: ${message}`)));
+    } else {
+      dispatch(createNote(data, () => {
+        toast.success('Note created successfully!');
+        history.replace('/notes');
+      }, (message) => toast.error(`Error: ${message}`)));
+    }
+    
   };
 
   return (

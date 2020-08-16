@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom';
 
 const NotesCollection = ({ notes }) => {
   return (
@@ -16,7 +17,11 @@ const NotesCollection = ({ notes }) => {
           {
             notes.map(item => (
               <tr key={item._id}>
-                <td>{item.title}</td>
+                <td>
+                  <Link to={`/edit-note/${item._id}`}>
+                    {item.title}
+                  </Link>
+                </td>
                 <td>{item.content}</td>
                 <td>{item.description}</td>
                 <td>{item.category}</td>

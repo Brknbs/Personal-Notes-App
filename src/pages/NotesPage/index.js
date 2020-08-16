@@ -14,9 +14,13 @@ const NotesPage = () => {
 
   const { isLoading, notes } = useSelector(mapState);
 
+  const fetchNotes = () => {
+    dispatch(fetchAllNotes());
+  }
+
   useEffect(() => {
     dispatch(fetchAllNotes());
-  }, [notes]);
+  }, []);
 
   return (
     <div>
